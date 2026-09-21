@@ -6,7 +6,9 @@ from fastmcp import FastMCP
 
 
 BASE_DIR = Path(__file__).parent
-DB_PATH = BASE_DIR / "expenses.db"
+DATA_DIR = Path(os.getenv("DATA_DIR", str(BASE_DIR))).expanduser()
+DATA_DIR.mkdir(parents=True, exist_ok=True)
+DB_PATH = DATA_DIR / "expenses.db"
 CATEGORIES_PATH = BASE_DIR / "categories.json"
 PORT = int(os.getenv("PORT", "8000"))
 
