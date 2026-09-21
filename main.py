@@ -1,4 +1,5 @@
 import sqlite3
+import os
 from pathlib import Path
 
 from fastmcp import FastMCP
@@ -7,6 +8,7 @@ from fastmcp import FastMCP
 BASE_DIR = Path(__file__).parent
 DB_PATH = BASE_DIR / "expenses.db"
 CATEGORIES_PATH = BASE_DIR / "categories.json"
+PORT = int(os.getenv("PORT", "8000"))
 
 mcp = FastMCP(name="ExpenseTracker")
 
