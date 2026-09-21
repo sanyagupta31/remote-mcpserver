@@ -1,13 +1,34 @@
 import sqlite3
 import os
+import tempfile
 from pathlib import Path
 
 from fastmcp import FastMCP
 
 
 BASE_DIR = Path(__file__).parent
-DATA_DIR = Path(os.getenv("DATA_DIR", str(BASE_DIR))).expanduser()
-DATA_DIR.mkdir(parents=True, exist_ok=True)
+
+
+def resolve_data_dir() -> Path:
+    configured_dir = os.getenv("DATA_DIR")
+    candidates = (
+        [Path(configured_dir).expanduser()]
+        if configured_dir
+        else [BASE_DIR, Path(tempfile.gettempdir()) / "expense-tracker"]
+    )
+    for candidate in candidates:
+        try:
+            candidate.mkdir(parents=True, exist_ok=True)
+            database_path = candidate / "expenses.db"
+            with database_path.open("a", encoding="utf-8"):
+                pass
+            return candidate
+        except OSError:
+            continue
+    raise RuntimeError("No writable data directory is available; set DATA_DIR")
+
+
+DATA_DIR = resolve_data_dir()
 DB_PATH = DATA_DIR / "expenses.db"
 CATEGORIES_PATH = BASE_DIR / "categories.json"
 PORT = int(os.getenv("PORT", "8000"))

@@ -59,8 +59,10 @@ The MCP HTTP endpoint is:
 http://localhost:8000/mcp
 ```
 
-The SQLite database is stored beside `main.py` by default. For deployments where
-the source directory is read-only, set `DATA_DIR` to a writable persistent volume:
+The SQLite database is stored beside `main.py` when that directory is writable. If
+it is not writable and `DATA_DIR` is unset, the server falls back to a temporary
+runtime directory. For deployments where expenses must survive restarts, set
+`DATA_DIR` to a writable persistent volume:
 
 ```powershell
 $env:DATA_DIR = "D:\data\expense-tracker"
